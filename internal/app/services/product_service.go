@@ -19,13 +19,16 @@ func NewProductService(repo *repository.ProductRepository) *ProductService {
 func (ps *ProductService) CreateProduct(body []byte) error {
 	var newProduct models.Product
 
-	var productId = uuid.NewString()
+	productId, err := uuid.NewUUID()
+	if err != nil {
+		return err
+	}
 
 	if err := json.Unmarshal(body, &newProduct); err != nil {
 		return err
 	}
 
-	if err := ps.repo.CreateProduct(productId, newProduct.Name, newProduct.Segment, newProduct.Price, newProduct.Stock, newProduct.CompanyId); err != nil {
+	if err := ps.repo.CreateProduct(productId, newProduct.Name, newProduct.Price, newProduct.CompanyId, newProduct.SegmentId); err != nil {
 		return err
 	}
 
@@ -47,7 +50,7 @@ func (ps *ProductService) UpdateProduct(body []byte) error {
 		return err
 	}
 
-	if err := ps.repo.UpdateProduct(productUpdate.Id, productUpdate.Name, productUpdate.Segment, productUpdate.Price, productUpdate.Stock); err != nil {
+	if err := ps.repo.UpdateProduct(productUpdate.Id, productUpdate.Name, productUpdate.SegmentId, productUpdate.Price); err != nil {
 		return err
 	}
 

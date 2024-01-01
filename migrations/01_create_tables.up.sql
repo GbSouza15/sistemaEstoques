@@ -57,14 +57,6 @@ CREATE TABLE IF NOT EXISTS dev.transactions (
     FOREIGN KEY (user_id) REFERENCES dev.users(id)
 );
 
-CREATE TABLE IF NOT EXISTS dev.product_segment_mapping (
-    product_id UUID NOT NULL,
-    segment_id UUID NOT NULL,
-    PRIMARY KEY (product_id, segment_id),
-    FOREIGN KEY (product_id) REFERENCES dev.products(id),
-    FOREIGN KEY (segment_id) REFERENCES dev.product_segments(id)
-);
-
 CREATE TABLE IF NOT EXISTS dev.deposits (
     id UUID PRIMARY KEY NOT NULL,
     name VARCHAR(255) NOT NULL,
