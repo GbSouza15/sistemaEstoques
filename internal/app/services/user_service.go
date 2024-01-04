@@ -66,13 +66,12 @@ func (us *UserService) LoginUser(body []byte) (string, error) {
 
 func (us *UserService) GetCompanyInfos(companyId uuid.UUID) (models.CompanyInfos, error) {
 
-	companyId, companyName, companyEmail, companyAddress, companyPhone, companyCnpj, err := us.repo.GetCompanyInfos(companyId)
+	companyName, companyEmail, companyAddress, companyPhone, companyCnpj, err := us.repo.GetCompanyInfos(companyId)
 	if err != nil {
 		return models.CompanyInfos{}, err
 	}
 
 	company := models.CompanyInfos{
-		Id:      companyId,
 		Name:    companyName,
 		Email:   companyEmail,
 		Address: companyAddress,

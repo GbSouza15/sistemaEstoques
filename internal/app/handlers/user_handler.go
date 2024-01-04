@@ -64,17 +64,8 @@ func (us *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		Name:    "token",
 		Value:   tokenString,
 		Expires: time.Now().Add(time.Hour * 24),
+		Path:    "/company",
 	})
-
-	c, err := r.Cookie("token")
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Error getting cookie"))
-		fmt.Println(err.Error())
-		return
-	}
-
-	fmt.Println(c.Value)
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("User logged in successfully"))
@@ -86,6 +77,12 @@ func (us *UserHandler) GetCompanyInfos(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Error getting cookie"))
 		fmt.Println(err.Error())
+		return
+	}
+
+	if c == nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Token cookie not present"))
 		return
 	}
 

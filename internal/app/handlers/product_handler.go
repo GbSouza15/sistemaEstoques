@@ -24,6 +24,8 @@ func (ph *ProductHandler) CreateProduct(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	defer r.Body.Close()
+
 	if err := ph.service.CreateProduct(body); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Println(err.Error())
@@ -54,6 +56,8 @@ func (ph *ProductHandler) UpdateProduct(w http.ResponseWriter, r *http.Request) 
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
+	defer r.Body.Close()
 
 	if err := ph.service.UpdateProduct(body); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

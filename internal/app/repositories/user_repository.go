@@ -35,13 +35,13 @@ func (u *UserRepository) LoginUser(email string) (uuid.UUID, string, error) {
 	return companyId, password, nil
 }
 
-func (u *UserRepository) GetCompanyInfos(id uuid.UUID) (uuid.UUID, string, string, string, string, string, error) {
+func (u *UserRepository) GetCompanyInfos(id uuid.UUID) (string, string, string, string, string, error) {
 	var name, email, address, phone, cnpj string
 
-	err := u.Db.QueryRow("SELECT id, name, email, address, phone, cnpj FROM dev.companies WHERE id = $1", id).Scan(&id, &name, &email, &address, &phone, &cnpj)
+	err := u.Db.QueryRow("SELECT name, email, address, phone, cnpj FROM dev.companies WHERE id = $1", id).Scan(&name, &email, &address, &phone, &cnpj)
 	if err != nil {
-		return uuid.Nil, "", "", "", "", "", err
+		return "", "", "", "", "", err
 	}
 
-	return id, name, email, address, phone, cnpj, nil
+	return name, email, address, phone, cnpj, nil
 }
