@@ -35,13 +35,16 @@ func RoutesApi(db *sql.DB) error {
 	// Get company infos Ok
 	r.HandleFunc("/company/user", userHandler.GetCompanyInfos).Methods(http.MethodGet)
 
-	// Delete product
+	// Delete product Ok
 	r.HandleFunc("/company/remove/product/{productId}", productHandler.RemoveProduct).Methods(http.MethodDelete)
 
-	// Create product
+	// Create product segment Ok
+	r.HandleFunc("/company/register/product/segment", productHandler.AddProductSegment).Methods(http.MethodPost)
+
+	// Create product OK
 	r.HandleFunc("/company/register/product", productHandler.CreateProduct).Methods(http.MethodPost)
 
-	// Update product
+	// Update product OK
 	r.HandleFunc("/company/update/product", productHandler.UpdateProduct).Methods(http.MethodPut)
 
 	// Register company OK

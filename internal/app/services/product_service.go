@@ -50,7 +50,26 @@ func (ps *ProductService) UpdateProduct(body []byte) error {
 		return err
 	}
 
-	if err := ps.repo.UpdateProduct(productUpdate.Id, productUpdate.Name, productUpdate.SegmentId, productUpdate.Price); err != nil {
+	if err := ps.repo.UpdateProduct(productUpdate.Id, productUpdate.Name, productUpdate.Price, productUpdate.SegmentId); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (ps *ProductService) AddProductSegment(body []byte) error {
+	var productSegment models.ProductSegment
+
+	var productSegmentId, err = uuid.NewUUID()
+	if err != nil {
+		return err
+	}
+
+	if err := json.Unmarshal(body, &productSegment); err != nil {
+		return err
+	}
+
+	if err := ps.repo.AddProductSegment(productSegmentId, productSegment.Name, productSegment.CompanyId); err != nil {
 		return err
 	}
 

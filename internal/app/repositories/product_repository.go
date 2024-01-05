@@ -32,13 +32,15 @@ func (p *ProductRepository) RemoveProduct(id string) error {
 	return nil
 }
 
-func (p *ProductRepository) UpdateProduct(id uuid.UUID, name string, segmentId uuid.UUID, price float64) error {
-	_, err := p.Db.Exec("UPDATE dev.products SET "+
-		"name = COALESCE(NULLIF($1, ''), name), "+
-		"segment_id = COALESCE(NULLIF($2, ''), segment_id), "+
-		"price = COALESCE(NULLIF($3, 0), price) "+
-		"WHERE id = $4",
-		name, segmentId, price, id)
+func (p *ProductRepository) UpdateProduct(id string, name *string, price *float64, segmentId *string) error {
+	_, err := p.Db.Exec(`
+		UPDATE dev.products
+		SET 
+			name = COALESCE($2, name),
+			price = COALESCE($3, price),
+			segment_id = COALESCE($4, segment_id)
+		WHERE id = $1
+	`, id, name, price, segmentId)
 
 	if err != nil {
 		return err

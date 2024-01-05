@@ -7,5 +7,5 @@ type Supplier struct {
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
 	Phone     string    `json:"phone"`
-	CompanyId uuid.UUID `json:"companyId"`
+	CompanyId uuid.UUID `json:"company_id"`
 }

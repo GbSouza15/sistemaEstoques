@@ -11,8 +11,14 @@ type Product struct {
 }
 
 type ProductUpdate struct {
+	Id        string   `json:"id"`
+	Name      *string  `json:"name"`
+	Price     *float64 `json:"price"`
+	SegmentId *string  `json:"segment_id"`
+}
+
+type ProductSegment struct {
 	Id        uuid.UUID `json:"id"`
 	Name      string    `json:"name"`
-	Price     float64   `json:"price"`
-	SegmentId uuid.UUID `json:"segment_id"`
+	CompanyId uuid.UUID `json:"company_id"`
 }

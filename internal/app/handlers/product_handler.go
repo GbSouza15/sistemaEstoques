@@ -68,3 +68,22 @@ func (ph *ProductHandler) UpdateProduct(w http.ResponseWriter, r *http.Request) 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Product updated successfully"))
 }
+
+func (ph *ProductHandler) AddProductSegment(w http.ResponseWriter, r *http.Request) {
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	defer r.Body.Close()
+
+	if err := ph.service.AddProductSegment(body); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	w.Write([]byte("Product segment created successfully"))
+}
