@@ -75,3 +75,14 @@ func (ps *ProductService) AddProductSegment(body []byte) error {
 
 	return nil
 }
+
+func (ps *ProductService) SearchProduct(body []byte) ([]models.Product, error) {
+	var ProductSearch models.ProductSearch
+
+	products, err := ps.repo.SearchProduct(ProductSearch.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	return products, nil
+}

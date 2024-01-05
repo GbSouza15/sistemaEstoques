@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 
+	"github.com/GbSouza15/sistemaEstoque/internal/app/models"
 	"github.com/google/uuid"
 )
 
@@ -65,4 +66,23 @@ func (p *ProductRepository) RemoveProductSegment(id uuid.UUID) error {
 	}
 
 	return nil
+}
+
+func (p *ProductRepository) SearchProduct(name string) ([]models.Product, error) {
+	rows, err := p.Db.Query("SELECT * FROM dev.products WHERE name LIKE '%' || $1 || '%'", name)
+	if err != nil {
+		return nil, err
+	}
+
+	var products []models.Product
+	for rows.Next() {
+		var product models.Product
+		if err := rows.Scan(&product.Id, &product.Name, &product.Price, &product.CompanyId, &product.SegmentId); err != nil {
+			return nil, err
+		}
+
+		products = append(products, product)
+	}
+
+	return products, nil
 }

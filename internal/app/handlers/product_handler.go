@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -86,4 +87,30 @@ func (ph *ProductHandler) AddProductSegment(w http.ResponseWriter, r *http.Reque
 
 	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte("Product segment created successfully"))
+}
+
+func (ph *ProductHandler) SearchProduct(w http.ResponseWriter, r *http.Request) {
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	products, err := ph.service.SearchProduct(body)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+
+	responseJson, err := json.Marshal(products)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(responseJson)
 }
