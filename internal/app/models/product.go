@@ -23,6 +23,16 @@ type ProductSegment struct {
 	CompanyId uuid.UUID `json:"company_id"`
 }
 
-type ProductSearch struct {
-	Name string `json:"name"`
+// type ProductSearch struct {
+// 	Name string `json:"name"`
+// }
+
+type ProductInfo struct {
+	Id            string
+	Name          string
+	Price         float64
+	CompanyId     string
+	SegmentId     string
+	SegmentName   string
+	StockQuantity int
 }

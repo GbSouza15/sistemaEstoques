@@ -29,7 +29,14 @@ func RoutesApi(db *sql.DB) error {
 	supplierService := service.NewSuppliersService(supplierRepository)
 	supplierHandler := handler.NewSupplierHandler(supplierService)
 
-	// Search product
+	depositRepository := repository.NewDepositRepository(db)
+	depositService := service.NewDepositService(depositRepository)
+	depositHandler := handler.NewDepositHandler(depositService)
+
+	// Create deposit
+	r.HandleFunc("/company/register/deposit", depositHandler.CreateDeposit).Methods(http.MethodPost)
+
+	// Search product Ok
 	r.HandleFunc("/company/search/product", productHandler.SearchProduct).Methods(http.MethodPost)
 
 	// Create supplier OK

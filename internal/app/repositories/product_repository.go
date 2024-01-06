@@ -68,21 +68,43 @@ func (p *ProductRepository) RemoveProductSegment(id uuid.UUID) error {
 	return nil
 }
 
-func (p *ProductRepository) SearchProduct(name string) ([]models.Product, error) {
-	rows, err := p.Db.Query("SELECT * FROM dev.products WHERE name LIKE '%' || $1 || '%'", name)
+func (p *ProductRepository) SearchProduct(name string) ([]models.ProductInfo, error) {
+	query := `
+        SELECT 
+            p.id,
+            p.name,
+            p.price,
+            p.company_id,
+            p.segment_id,
+            ps.name AS segment_name,
+            COALESCE(SUM(dp.quantity), 0) AS stock_quantity
+        FROM 
+            dev.products p
+        LEFT JOIN 
+            dev.product_segments ps ON p.segment_id = ps.id
+        LEFT JOIN 
+            dev.deposit_products dp ON p.id = dp.product_id
+        WHERE 
+            p.name LIKE '%' || $1 || '%'
+        GROUP BY 
+            p.id, p.name, p.price, p.company_id, p.segment_id, ps.name
+    `
+
+	rows, err := p.Db.Query(query, name)
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
-	var products []models.Product
+	var productInfos []models.ProductInfo
 	for rows.Next() {
-		var product models.Product
-		if err := rows.Scan(&product.Id, &product.Name, &product.Price, &product.CompanyId, &product.SegmentId); err != nil {
+		var productInfo models.ProductInfo
+		if err := rows.Scan(&productInfo.Id, &productInfo.Name, &productInfo.Price, &productInfo.CompanyId, &productInfo.SegmentId, &productInfo.SegmentName, &productInfo.StockQuantity); err != nil {
 			return nil, err
 		}
 
-		products = append(products, product)
+		productInfos = append(productInfos, productInfo)
 	}
 
-	return products, nil
+	return productInfos, nil
 }
