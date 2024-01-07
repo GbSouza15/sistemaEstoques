@@ -8,6 +8,8 @@ type Product struct {
 	Price     float64   `json:"price"`
 	CompanyId uuid.UUID `json:"company_id"`
 	SegmentId uuid.UUID `json:"segment_id"`
+	DepositId uuid.UUID `json:"deposit_id"`
+	Quantity  int       `json:"quantity"`
 }
 
 type ProductUpdate struct {
@@ -23,16 +25,16 @@ type ProductSegment struct {
 	CompanyId uuid.UUID `json:"company_id"`
 }
 
-// type ProductSearch struct {
-// 	Name string `json:"name"`
-// }
+type ProductSearch struct {
+	Name string `json:"name"`
+}
 
 type ProductInfo struct {
-	Id            string
-	Name          string
-	Price         float64
-	CompanyId     string
-	SegmentId     string
-	SegmentName   string
-	StockQuantity int
+	Id            string  `json:"id"`
+	Name          string  `json:"name"`
+	Price         float64 `json:"price"`
+	CompanyId     string  `json:"company_id"`
+	SegmentId     string  `json:"segment_id"`
+	SegmentName   string  `json:"segment_name"`
+	StockQuantity int     `json:"stock_quantity"`
 }

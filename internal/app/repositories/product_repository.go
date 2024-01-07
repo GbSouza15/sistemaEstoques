@@ -15,8 +15,13 @@ func NewProductRepository(db *sql.DB) *ProductRepository {
 	return &ProductRepository{db}
 }
 
-func (p *ProductRepository) CreateProduct(id uuid.UUID, name string, price float64, companyId, segment_id uuid.UUID) error {
+func (p *ProductRepository) CreateProduct(id uuid.UUID, name string, price float64, companyId, segment_id, deposit_id uuid.UUID, quantity int) error {
 	_, err := p.Db.Exec("INSERT INTO dev.products (id, name, price, company_id, segment_id) VALUES ($1, $2, $3, $4, $5)", id, name, price, companyId, segment_id)
+	if err != nil {
+		return err
+	}
+
+	_, err = p.Db.Exec("INSERT INTO dev.deposit_products (id, product_id, deposit_id, quantity) VALUES ($1, $2, $3, $4)", uuid.New(), id, deposit_id, quantity)
 	if err != nil {
 		return err
 	}
@@ -70,7 +75,7 @@ func (p *ProductRepository) RemoveProductSegment(id uuid.UUID) error {
 
 func (p *ProductRepository) SearchProduct(name string) ([]models.ProductInfo, error) {
 	query := `
-        SELECT 
+        SELECT
             p.id,
             p.name,
             p.price,
@@ -78,15 +83,14 @@ func (p *ProductRepository) SearchProduct(name string) ([]models.ProductInfo, er
             p.segment_id,
             ps.name AS segment_name,
             COALESCE(SUM(dp.quantity), 0) AS stock_quantity
-        FROM 
+        FROM
             dev.products p
-        LEFT JOIN 
+        LEFT JOIN
             dev.product_segments ps ON p.segment_id = ps.id
-        LEFT JOIN 
+        LEFT JOIN
             dev.deposit_products dp ON p.id = dp.product_id
-        WHERE 
-            p.name LIKE '%' || $1 || '%'
-        GROUP BY 
+        WHERE p.name LIKE $1 || '%'
+        GROUP BY
             p.id, p.name, p.price, p.company_id, p.segment_id, ps.name
     `
 

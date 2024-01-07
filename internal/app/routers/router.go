@@ -33,7 +33,7 @@ func RoutesApi(db *sql.DB) error {
 	depositService := service.NewDepositService(depositRepository)
 	depositHandler := handler.NewDepositHandler(depositService)
 
-	// Create deposit
+	// Create deposit OK
 	r.HandleFunc("/company/register/deposit", depositHandler.CreateDeposit).Methods(http.MethodPost)
 
 	// Search product Ok

@@ -28,7 +28,7 @@ func (ps *ProductService) CreateProduct(body []byte) error {
 		return err
 	}
 
-	if err := ps.repo.CreateProduct(productId, newProduct.Name, newProduct.Price, newProduct.CompanyId, newProduct.SegmentId); err != nil {
+	if err := ps.repo.CreateProduct(productId, newProduct.Name, newProduct.Price, newProduct.CompanyId, newProduct.SegmentId, newProduct.DepositId, newProduct.Quantity); err != nil {
 		return err
 	}
 
@@ -77,7 +77,11 @@ func (ps *ProductService) AddProductSegment(body []byte) error {
 }
 
 func (ps *ProductService) SearchProduct(body []byte) ([]models.ProductInfo, error) {
-	var ProductSearch models.ProductInfo
+	var ProductSearch models.ProductSearch
+
+	if err := json.Unmarshal(body, &ProductSearch); err != nil {
+		return nil, err
+	}
 
 	products, err := ps.repo.SearchProduct(ProductSearch.Name)
 	if err != nil {
