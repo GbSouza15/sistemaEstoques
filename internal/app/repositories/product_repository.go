@@ -38,18 +38,28 @@ func (p *ProductRepository) RemoveProduct(id string) error {
 	return nil
 }
 
-func (p *ProductRepository) UpdateProduct(id string, name *string, price *float64, segmentId *string) error {
-	_, err := p.Db.Exec(`
-		UPDATE dev.products
-		SET 
-			name = COALESCE($2, name),
-			price = COALESCE($3, price),
-			segment_id = COALESCE($4, segment_id)
-		WHERE id = $1
-	`, id, name, price, segmentId)
+func (p *ProductRepository) UpdateProduct(id string, name *string, price *float64, stock *int, segmentId *string) error {
+	query := `
+		UPDATE
+			dev.products
+		SET
+			name = COALESCE($1, name),
+			price = COALESCE($2, price),
+			segment_id = COALESCE($3, segment_id)
+		WHERE
+			id = $4
+	`
 
+	_, err := p.Db.Exec(query, name, price, segmentId, id)
 	if err != nil {
 		return err
+	}
+
+	if stock != nil {
+		_, err = p.Db.Exec("UPDATE dev.deposit_products SET quantity = $1 WHERE product_id = $2", stock, id)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

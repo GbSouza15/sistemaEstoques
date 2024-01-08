@@ -50,7 +50,7 @@ func (ps *ProductService) UpdateProduct(body []byte) error {
 		return err
 	}
 
-	if err := ps.repo.UpdateProduct(productUpdate.Id, productUpdate.Name, productUpdate.Price, productUpdate.SegmentId); err != nil {
+	if err := ps.repo.UpdateProduct(productUpdate.Id, productUpdate.Name, productUpdate.Price, productUpdate.Stock, productUpdate.SegmentId); err != nil {
 		return err
 	}
 
