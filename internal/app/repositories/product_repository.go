@@ -99,7 +99,7 @@ func (p *ProductRepository) SearchProduct(name string) ([]models.ProductInfo, er
             dev.product_segments ps ON p.segment_id = ps.id
         LEFT JOIN
             dev.deposit_products dp ON p.id = dp.product_id
-        WHERE p.name LIKE $1 || '%'
+        WHERE p.name LIKE '%' || $1 || '%'
         GROUP BY
             p.id, p.name, p.price, p.company_id, p.segment_id, ps.name
     `

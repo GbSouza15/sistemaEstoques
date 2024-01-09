@@ -9,6 +9,7 @@ import (
 
 	service "github.com/GbSouza15/sistemaEstoque/internal/app/services"
 	"github.com/GbSouza15/sistemaEstoque/pkg/token"
+	"github.com/gorilla/mux"
 )
 
 type UserHandler struct {
@@ -113,4 +114,19 @@ func (us *UserHandler) GetCompanyInfos(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(reponseJson)
+}
+
+func (us *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	userId := vars["userId"]
+
+	if err := us.service.DeleteUser(userId); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Error deleting user"))
+		fmt.Println(err.Error())
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("User deleted successfully"))
 }

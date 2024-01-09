@@ -81,3 +81,12 @@ func (us *UserService) GetCompanyInfos(companyId uuid.UUID) (models.CompanyInfos
 
 	return company, nil
 }
+
+func (us *UserService) DeleteUser(userId string) error {
+
+	if err := us.repo.DeleteUser(userId); err != nil {
+		return err
+	}
+
+	return nil
+}

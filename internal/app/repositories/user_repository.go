@@ -45,3 +45,12 @@ func (u *UserRepository) GetCompanyInfos(id uuid.UUID) (string, string, string, 
 
 	return name, email, address, phone, cnpj, nil
 }
+
+func (u *UserRepository) DeleteUser(id string) error {
+	_, err := u.Db.Exec("DELETE FROM dev.users WHERE id = $1", id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

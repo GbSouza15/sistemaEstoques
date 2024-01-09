@@ -6,7 +6,7 @@ import (
 	"github.com/GbSouza15/sistemaEstoque/pkg/token"
 )
 
-func Logging(f http.HandlerFunc) http.HandlerFunc {
+func Middleware(f http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		c, err := r.Cookie("token")
 		if err != nil {

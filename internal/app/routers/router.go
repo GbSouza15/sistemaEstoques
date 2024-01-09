@@ -8,6 +8,7 @@ import (
 	handler "github.com/GbSouza15/sistemaEstoque/internal/app/handlers"
 	repository "github.com/GbSouza15/sistemaEstoque/internal/app/repositories"
 	service "github.com/GbSouza15/sistemaEstoque/internal/app/services"
+	"github.com/GbSouza15/sistemaEstoque/pkg/middleware"
 	"github.com/gorilla/mux"
 )
 
@@ -34,28 +35,31 @@ func RoutesApi(db *sql.DB) error {
 	depositHandler := handler.NewDepositHandler(depositService)
 
 	// Create deposit OK
-	r.HandleFunc("/company/register/deposit", depositHandler.CreateDeposit).Methods(http.MethodPost)
+	r.HandleFunc("/company/register/deposit", middleware.Middleware(depositHandler.CreateDeposit)).Methods(http.MethodPost)
+
+	// Delete User
+	r.HandleFunc("/company/remove/user/{userId}", middleware.Middleware(userHandler.DeleteUser)).Methods(http.MethodDelete)
 
 	// Search product Ok
-	r.HandleFunc("/company/search/product", productHandler.SearchProduct).Methods(http.MethodPost)
+	r.HandleFunc("/company/search/product", middleware.Middleware(productHandler.SearchProduct)).Methods(http.MethodPost)
 
 	// Create supplier OK
-	r.HandleFunc("/company/register/supplier", supplierHandler.CreateSupplier).Methods(http.MethodPost)
+	r.HandleFunc("/company/register/supplier", middleware.Middleware(supplierHandler.CreateSupplier)).Methods(http.MethodPost)
 
 	// Get company infos Ok
-	r.HandleFunc("/company/user", userHandler.GetCompanyInfos).Methods(http.MethodGet)
+	r.HandleFunc("/company/user", middleware.Middleware(userHandler.GetCompanyInfos)).Methods(http.MethodGet)
 
 	// Delete product Ok
-	r.HandleFunc("/company/remove/product/{productId}", productHandler.RemoveProduct).Methods(http.MethodDelete)
+	r.HandleFunc("/company/remove/product/{productId}", middleware.Middleware(productHandler.RemoveProduct)).Methods(http.MethodDelete)
 
 	// Create product segment Ok
-	r.HandleFunc("/company/register/product/segment", productHandler.AddProductSegment).Methods(http.MethodPost)
+	r.HandleFunc("/company/register/product/segment", middleware.Middleware(productHandler.AddProductSegment)).Methods(http.MethodPost)
 
 	// Create product OK
-	r.HandleFunc("/company/register/product", productHandler.CreateProduct).Methods(http.MethodPost)
+	r.HandleFunc("/company/register/product", middleware.Middleware(productHandler.CreateProduct)).Methods(http.MethodPost)
 
 	// Update product OK
-	r.HandleFunc("/company/update/product", productHandler.UpdateProduct).Methods(http.MethodPut)
+	r.HandleFunc("/company/update/product", middleware.Middleware(productHandler.UpdateProduct)).Methods(http.MethodPut)
 
 	// Register company OK
 	r.HandleFunc("/company/register", companyHandler.RegisterCompany).Methods(http.MethodPost)
