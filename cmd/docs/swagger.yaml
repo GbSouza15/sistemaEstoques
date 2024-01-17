@@ -1,4 +1,4 @@
-basePath: /
+basePath: /api/v1
 definitions:
   models.Company:
     properties:
@@ -111,17 +111,18 @@ definitions:
       password:
         type: string
     type: object
+host: localhost:8080
 info:
   contact:
     email: support@swagger.io
-    name: API Support
+    name: Suporte à API
     url: http://www.swagger.io/support
-  description: This is a sample server Petstore server.
+  description: Esta é uma API de exemplo para um sistema de estoque.
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
-  title: Swagger Example API
+  title: Sistema de Estoque API
   version: "1.0"
 paths:
   /company/login/user:
