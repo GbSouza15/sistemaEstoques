@@ -1,0 +1,473 @@
+basePath: /
+definitions:
+  models.Company:
+    properties:
+      address:
+        type: string
+      cnpj:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.Deposit:
+    properties:
+      address:
+        type: string
+      company_id:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  models.Product:
+    properties:
+      company_id:
+        type: string
+      deposit_id:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      quantity:
+        type: integer
+      segment_id:
+        type: string
+    type: object
+  models.ProductSearch:
+    properties:
+      name:
+        type: string
+    type: object
+  models.ProductSegment:
+    properties:
+      company_id:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  models.ProductUpdate:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      segment_id:
+        type: string
+      stock:
+        type: integer
+    type: object
+  models.Supplier:
+    properties:
+      company_id:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.User:
+    properties:
+      admin:
+        type: boolean
+      company_id:
+        type: string
+      cpf:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.UserLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server Petstore server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /company/login/user:
+    post:
+      consumes:
+      - application/json
+      description: Login do usuário no sistema
+      parameters:
+      - description: User login details
+        in: body
+        name: requestBody
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User logged in successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Login do usuário
+      tags:
+      - User
+  /company/register:
+    post:
+      consumes:
+      - application/json
+      description: Registra uma nova empresa no sistema
+      parameters:
+      - description: Detalhes do cadastro da empresa
+        in: body
+        name: requestBody
+        required: true
+        schema:
+          $ref: '#/definitions/models.Company'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Empresa registrada com sucesso
+          schema:
+            type: string
+        "400":
+          description: Requisição Inválida
+          schema:
+            type: string
+        "500":
+          description: Erro Interno do Servidor
+          schema:
+            type: string
+      summary: Registrar uma nova empresa
+      tags:
+      - Empresa
+  /company/register/deposit:
+    post:
+      consumes:
+      - application/json
+      description: Cria um novo depósito no sistema
+      parameters:
+      - description: Detalhes do cadastro do depósito
+        in: body
+        name: requestBody
+        required: true
+        schema:
+          $ref: '#/definitions/models.Deposit'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Depósito criado com sucesso
+          schema:
+            type: string
+        "400":
+          description: Requisição Inválida
+          schema:
+            type: string
+        "500":
+          description: Erro Interno do Servidor
+          schema:
+            type: string
+      summary: Criar um novo depósito
+      tags:
+      - Depósito
+  /company/register/product:
+    post:
+      consumes:
+      - application/json
+      description: Cria um novo produto no sistema
+      parameters:
+      - description: Detalhes do cadastro do produto
+        in: body
+        name: requestBody
+        required: true
+        schema:
+          $ref: '#/definitions/models.Product'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Produto criado com sucesso
+          schema:
+            type: string
+        "400":
+          description: Requisição Inválida
+          schema:
+            type: string
+        "500":
+          description: Erro Interno do Servidor
+          schema:
+            type: string
+      summary: Criar um novo produto
+      tags:
+      - Produto
+  /company/register/product/segment:
+    post:
+      consumes:
+      - application/json
+      description: Adiciona um novo segmento a um produto existente
+      parameters:
+      - description: Detalhes do segmento a ser adicionado
+        in: body
+        name: requestBody
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProductSegment'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Segmento de produto adicionado com sucesso
+          schema:
+            type: string
+        "400":
+          description: Requisição Inválida
+          schema:
+            type: string
+        "500":
+          description: Erro Interno do Servidor
+          schema:
+            type: string
+      summary: Adicionar segmento de produto
+      tags:
+      - Produto
+  /company/register/supplier:
+    post:
+      consumes:
+      - application/json
+      description: Cria um novo fornecedor no sistema
+      parameters:
+      - description: Detalhes do cadastro do fornecedor
+        in: body
+        name: requestBody
+        required: true
+        schema:
+          $ref: '#/definitions/models.Supplier'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Fornecedor criado com sucesso
+          schema:
+            type: string
+        "400":
+          description: Requisição Inválida
+          schema:
+            type: string
+        "500":
+          description: Erro Interno do Servidor
+          schema:
+            type: string
+      summary: Criar um novo fornecedor
+      tags:
+      - Fornecedor
+  /company/register/user:
+    post:
+      consumes:
+      - application/json
+      description: Registrar um novo usuário no sistema
+      parameters:
+      - description: User registration details
+        in: body
+        name: requestBody
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User registered successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Registrar novo usuário
+      tags:
+      - User
+  /company/remove/product/{productId}:
+    delete:
+      description: Remove um produto com base no ID fornecido
+      parameters:
+      - description: ID do produto a ser removido
+        in: path
+        name: productId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Produto removido com sucesso
+          schema:
+            type: string
+        "500":
+          description: Erro Interno do Servidor
+          schema:
+            type: string
+      summary: Remover um produto
+      tags:
+      - Produto
+  /company/remove/user/{userId}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletar usuário do sistema baseado no ID do usuário
+      parameters:
+      - description: User ID to be deleted
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User deleted successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Deletar usuário
+      tags:
+      - User
+  /company/search/product:
+    post:
+      consumes:
+      - application/json
+      description: Pesquisa produtos com base nos critérios fornecidos
+      parameters:
+      - description: Critérios de pesquisa do produto
+        in: body
+        name: requestBody
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProductSearch'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lista de produtos correspondentes à pesquisa
+          schema:
+            items:
+              $ref: '#/definitions/models.Product'
+            type: array
+        "400":
+          description: Requisição Inválida
+          schema:
+            type: string
+        "500":
+          description: Erro Interno do Servidor
+          schema:
+            type: string
+      summary: Pesquisar produtos
+      tags:
+      - Produto
+  /company/update/product:
+    put:
+      consumes:
+      - application/json
+      description: Atualiza as informações de um produto existente
+      parameters:
+      - description: Detalhes de atualização do produto
+        in: body
+        name: requestBody
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProductUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Produto atualizado com sucesso
+          schema:
+            type: string
+        "400":
+          description: Requisição Inválida
+          schema:
+            type: string
+        "500":
+          description: Erro Interno do Servidor
+          schema:
+            type: string
+      summary: Atualizar um produto
+      tags:
+      - Produto
+  /company/user:
+    get:
+      consumes:
+      - application/json
+      description: Pegar informações da empresa baseado no ID da empresa presente
+        no token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Company information
+          schema:
+            $ref: '#/definitions/models.Company'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Pegar informações da empresa
+      tags:
+      - User
+swagger: "2.0"
