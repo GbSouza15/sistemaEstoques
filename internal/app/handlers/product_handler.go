@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	service "github.com/GbSouza15/sistemaEstoque/internal/app/services"
+	"github.com/GbSouza15/sistemaEstoque/pkg/utils"
 	"github.com/gorilla/mux"
 )
 
@@ -31,20 +32,20 @@ func NewProductHandler(service *service.ProductService) *ProductHandler {
 func (ph *ProductHandler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		utils.WriteResponse("Error reading body", w, http.StatusInternalServerError)
+		fmt.Println(err.Error())
 		return
 	}
 
 	defer r.Body.Close()
 
 	if err := ph.service.CreateProduct(body); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		utils.WriteResponse("Error creating product", w, http.StatusBadRequest)
 		fmt.Println(err.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("Product created successfully"))
+	utils.WriteResponse("Product created successfully", w, http.StatusCreated)
 }
 
 // @Summary Remover um produto
@@ -59,13 +60,12 @@ func (ph *ProductHandler) RemoveProduct(w http.ResponseWriter, r *http.Request) 
 	id := vars["productId"]
 
 	if err := ph.service.RemoveProduct(id); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Error to remove product"))
+		utils.WriteResponse("Error to remove product", w, http.StatusBadRequest)
+		fmt.Println(err.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Product removed successfully"))
+	utils.WriteResponse("Product removed successfully", w, http.StatusOK)
 }
 
 // @Summary Atualizar um produto
@@ -81,20 +81,20 @@ func (ph *ProductHandler) RemoveProduct(w http.ResponseWriter, r *http.Request) 
 func (ph *ProductHandler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		utils.WriteResponse("Error reading body", w, http.StatusInternalServerError)
+		fmt.Println(err.Error())
 		return
 	}
 
 	defer r.Body.Close()
 
 	if err := ph.service.UpdateProduct(body); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		utils.WriteResponse("Error to update product", w, http.StatusBadRequest)
 		fmt.Println(err.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Product updated successfully"))
+	utils.WriteResponse("Product updated successfully", w, http.StatusOK)
 }
 
 // @Summary Adicionar segmento de produto
@@ -110,20 +110,20 @@ func (ph *ProductHandler) UpdateProduct(w http.ResponseWriter, r *http.Request) 
 func (ph *ProductHandler) AddProductSegment(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		utils.WriteResponse("Error reading body", w, http.StatusInternalServerError)
+		fmt.Println(err.Error())
 		return
 	}
 
 	defer r.Body.Close()
 
 	if err := ph.service.AddProductSegment(body); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		utils.WriteResponse("Error to add product segment", w, http.StatusBadRequest)
 		fmt.Println(err.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("Product segment created successfully"))
+	utils.WriteResponse("Product segment added successfully", w, http.StatusCreated)
 }
 
 // @Summary Pesquisar produtos
@@ -139,20 +139,21 @@ func (ph *ProductHandler) AddProductSegment(w http.ResponseWriter, r *http.Reque
 func (ph *ProductHandler) SearchProduct(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		utils.WriteResponse("Error reading body", w, http.StatusInternalServerError)
+		fmt.Println(err.Error())
 		return
 	}
 
 	products, err := ph.service.SearchProduct(body)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		utils.WriteResponse("Error to search product", w, http.StatusBadRequest)
 		fmt.Println(err.Error())
 		return
 	}
 
 	responseJson, err := json.Marshal(products)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		utils.WriteResponse("Error to marshal response", w, http.StatusInternalServerError)
 		fmt.Println(err.Error())
 		return
 	}

@@ -16,12 +16,12 @@ func NewProductRepository(db *sql.DB) *ProductRepository {
 }
 
 func (p *ProductRepository) CreateProduct(id uuid.UUID, name string, price float64, companyId, segment_id, deposit_id uuid.UUID, quantity int) error {
-	_, err := p.Db.Exec("INSERT INTO dev.products (id, name, price, company_id, segment_id) VALUES ($1, $2, $3, $4, $5)", id, name, price, companyId, segment_id)
+	_, err := p.Db.Exec("INSERT INTO products (id, name, price, company_id, segment_id) VALUES (?, ?, ?, ?, ?)", id, name, price, companyId, segment_id)
 	if err != nil {
 		return err
 	}
 
-	_, err = p.Db.Exec("INSERT INTO dev.deposit_products (id, product_id, deposit_id, quantity) VALUES ($1, $2, $3, $4)", uuid.New(), id, deposit_id, quantity)
+	_, err = p.Db.Exec("INSERT INTO deposit_products (id, product_id, deposit_id, quantity) VALUES (?, ?, ?, ?)", uuid.New(), id, deposit_id, quantity)
 	if err != nil {
 		return err
 	}
@@ -30,7 +30,7 @@ func (p *ProductRepository) CreateProduct(id uuid.UUID, name string, price float
 }
 
 func (p *ProductRepository) RemoveProduct(id string) error {
-	_, err := p.Db.Exec("DELETE FROM dev.products WHERE id = $1", id)
+	_, err := p.Db.Exec("DELETE FROM products WHERE id = ?", id)
 	if err != nil {
 		return err
 	}
@@ -41,13 +41,13 @@ func (p *ProductRepository) RemoveProduct(id string) error {
 func (p *ProductRepository) UpdateProduct(id string, name *string, price *float64, stock *int, segmentId *string) error {
 	query := `
 		UPDATE
-			dev.products
+			products
 		SET
-			name = COALESCE($1, name),
-			price = COALESCE($2, price),
-			segment_id = COALESCE($3, segment_id)
+			name = COALESCE(?, name),
+			price = COALESCE(?, price),
+			segment_id = COALESCE(?, segment_id)
 		WHERE
-			id = $4
+			id = ?
 	`
 
 	_, err := p.Db.Exec(query, name, price, segmentId, id)
@@ -56,7 +56,7 @@ func (p *ProductRepository) UpdateProduct(id string, name *string, price *float6
 	}
 
 	if stock != nil {
-		_, err = p.Db.Exec("UPDATE dev.deposit_products SET quantity = $1 WHERE product_id = $2", stock, id)
+		_, err = p.Db.Exec("UPDATE deposit_products SET quantity = ? WHERE product_id = ?", stock, id)
 		if err != nil {
 			return err
 		}
@@ -66,7 +66,7 @@ func (p *ProductRepository) UpdateProduct(id string, name *string, price *float6
 }
 
 func (p *ProductRepository) AddProductSegment(id uuid.UUID, name string, company_id uuid.UUID) error {
-	_, err := p.Db.Exec("INSERT INTO dev.product_segments (id, name, company_id) VALUES ($1, $2, $3)", id, name, company_id)
+	_, err := p.Db.Exec("INSERT INTO product_segments (id, name, company_id) VALUES (?, ?, ?)", id, name, company_id)
 	if err != nil {
 		return err
 	}
@@ -75,7 +75,7 @@ func (p *ProductRepository) AddProductSegment(id uuid.UUID, name string, company
 }
 
 func (p *ProductRepository) RemoveProductSegment(id uuid.UUID) error {
-	_, err := p.Db.Exec("DELETE FROM dev.product_segments WHERE id = $1", id)
+	_, err := p.Db.Exec("DELETE FROM product_segments WHERE id = ?", id)
 	if err != nil {
 		return err
 	}
@@ -94,12 +94,12 @@ func (p *ProductRepository) SearchProduct(name string) ([]models.ProductInfo, er
             ps.name AS segment_name,
             COALESCE(SUM(dp.quantity), 0) AS stock_quantity
         FROM
-            dev.products p
+            products p
         LEFT JOIN
-            dev.product_segments ps ON p.segment_id = ps.id
+            product_segments ps ON p.segment_id = ps.id
         LEFT JOIN
-            dev.deposit_products dp ON p.id = dp.product_id
-        WHERE p.name LIKE '%' || $1 || '%'
+            deposit_products dp ON p.id = dp.product_id
+        WHERE p.name LIKE CONCAT('%', ?, '%')
         GROUP BY
             p.id, p.name, p.price, p.company_id, p.segment_id, ps.name
     `

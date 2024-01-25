@@ -24,9 +24,88 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/company/login/user": {
-            "post": {
-                "description": "Login do usuário no sistema",
+        "/company/delete/deposit/{depositId}": {
+            "delete": {
+                "description": "Deleta um depósito do sistema",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Depósito"
+                ],
+                "summary": "Deletar um depósito",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID do depósito",
+                        "name": "depositId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deposit removed successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error to remove deposit",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/company/delete/supplier/{id}": {
+            "delete": {
+                "description": "Deleta um fornecedor no sistema",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Fornecedor"
+                ],
+                "summary": "Deletar um fornecedor",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID do fornecedor",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Fornecedor deletado com sucesso",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição Inválida",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Erro Interno do Servidor",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/company/info": {
+            "get": {
+                "description": "Pegar informações da empresa baseado no ID da empresa presente no token",
                 "consumes": [
                     "application/json"
                 ],
@@ -36,27 +115,60 @@ const docTemplate = `{
                 "tags": [
                     "User"
                 ],
-                "summary": "Login do usuário",
-                "parameters": [
-                    {
-                        "description": "User login details",
-                        "name": "requestBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.UserLogin"
-                        }
-                    }
-                ],
+                "summary": "Pegar informações da empresa",
                 "responses": {
                     "200": {
-                        "description": "User logged in successfully",
+                        "description": "Company information",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.Company"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/company/list/deposit": {
+            "get": {
+                "description": "Lista todos os depósitos cadastrados no sistema",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Depósito"
+                ],
+                "summary": "Listar depósitos",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID da empresa",
+                        "name": "companyId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de depósitos",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Deposit"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
                         "schema": {
                             "type": "string"
                         }
@@ -471,6 +583,99 @@ const docTemplate = `{
                 }
             }
         },
+        "/company/suppliers": {
+            "get": {
+                "description": "Lista todos os fornecedores de uma empresa",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Fornecedor"
+                ],
+                "summary": "Listar fornecedores",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID da empresa",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de fornecedores",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Supplier"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição Inválida",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Erro Interno do Servidor",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/company/update/deposit": {
+            "put": {
+                "description": "Atualiza um depósito no sistema",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Depósito"
+                ],
+                "summary": "Atualizar um depósito",
+                "parameters": [
+                    {
+                        "description": "Detalhes do cadastro do depósito",
+                        "name": "requestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.DepositUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deposit updated successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Error reading body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error updating deposit",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/company/update/product": {
             "put": {
                 "description": "Atualiza as informações de um produto existente",
@@ -517,9 +722,55 @@ const docTemplate = `{
                 }
             }
         },
-        "/company/user": {
-            "get": {
-                "description": "Pegar informações da empresa baseado no ID da empresa presente no token",
+        "/company/update/supplier": {
+            "put": {
+                "description": "Atualiza um fornecedor no sistema",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Fornecedor"
+                ],
+                "summary": "Atualizar um fornecedor",
+                "parameters": [
+                    {
+                        "description": "Detalhes da atualização do fornecedor",
+                        "name": "requestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SupplierUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Fornecedor atualizado com sucesso",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição Inválida",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Erro Interno do Servidor",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/company/user/login": {
+            "post": {
+                "description": "Login do usuário no sistema",
                 "consumes": [
                     "application/json"
                 ],
@@ -529,12 +780,23 @@ const docTemplate = `{
                 "tags": [
                     "User"
                 ],
-                "summary": "Pegar informações da empresa",
+                "summary": "Login do usuário",
+                "parameters": [
+                    {
+                        "description": "User login details",
+                        "name": "requestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UserLogin"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Company information",
+                        "description": "User logged in successfully",
                         "schema": {
-                            "$ref": "#/definitions/models.Company"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -587,6 +849,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "company_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.DepositUpdate": {
+            "type": "object",
+            "properties": {
+                "address": {
                     "type": "string"
                 },
                 "id": {
@@ -685,6 +961,23 @@ const docTemplate = `{
                 }
             }
         },
+        "models.SupplierUpdate": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
         "models.User": {
             "type": "object",
             "properties": {
@@ -731,8 +1024,8 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
-	BasePath:         "/api/v1",
+	Host:             "sistemaestoques.fly.dev",
+	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "Sistema de Estoque API",
 	Description:      "Esta é uma API de exemplo para um sistema de estoque.",

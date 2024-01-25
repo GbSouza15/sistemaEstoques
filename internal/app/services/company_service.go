@@ -38,3 +38,21 @@ func (cs *CompanyService) RegisterCompany(body []byte) error {
 
 	return nil
 }
+
+func (cs *CompanyService) GetCompanyInfos(companyId uuid.UUID) (models.CompanyInfos, error) {
+
+	companyName, companyEmail, companyAddress, companyPhone, companyCnpj, err := cs.repo.GetCompanyInfos(companyId)
+	if err != nil {
+		return models.CompanyInfos{}, err
+	}
+
+	company := models.CompanyInfos{
+		Name:    companyName,
+		Email:   companyEmail,
+		Address: companyAddress,
+		Phone:   companyPhone,
+		CNPJ:    companyCnpj,
+	}
+
+	return company, nil
+}

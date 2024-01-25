@@ -34,3 +34,39 @@ func (ss *SuppliersService) CreateSupplier(body []byte) error {
 
 	return nil
 }
+
+func (ss *SuppliersService) UpdateSupplier(body []byte) error {
+	var supplier models.SupplierUpdate
+
+	if err := json.Unmarshal(body, &supplier); err != nil {
+		return err
+	}
+
+	if err := ss.repo.UpdateSupplier(supplier.Id, supplier.Name, supplier.Email, supplier.Phone); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (ss *SuppliersService) DeleteSupplier(id string) error {
+	if err := ss.repo.DeleteSupplier(id); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (ss *SuppliersService) GetSuppliers(id uuid.UUID) ([]byte, error) {
+	suppliers, err := ss.repo.GetSuppliers(id)
+	if err != nil {
+		return nil, err
+	}
+
+	responseJson, err := json.Marshal(suppliers)
+	if err != nil {
+		return nil, err
+	}
+
+	return responseJson, nil
+}

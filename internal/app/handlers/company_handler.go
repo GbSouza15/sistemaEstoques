@@ -1,11 +1,14 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 
 	service "github.com/GbSouza15/sistemaEstoque/internal/app/services"
+	"github.com/GbSouza15/sistemaEstoque/pkg/token"
+	"github.com/GbSouza15/sistemaEstoque/pkg/utils"
 )
 
 type CompanyHandler struct {
@@ -29,8 +32,7 @@ func NewCompanyHandler(service *service.CompanyService) *CompanyHandler {
 func (ch *CompanyHandler) RegisterCompany(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Error reading body"))
+		utils.WriteResponse("Error reading body", w, http.StatusInternalServerError)
 		fmt.Println(err.Error())
 		return
 	}
@@ -38,12 +40,59 @@ func (ch *CompanyHandler) RegisterCompany(w http.ResponseWriter, r *http.Request
 	defer r.Body.Close()
 
 	if err := ch.service.RegisterCompany(body); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Error registering company"))
+		utils.WriteResponse("Error creating company", w, http.StatusBadRequest)
 		fmt.Println(err.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("Company registered successfully"))
+	utils.WriteResponse("Company created successfully", w, http.StatusCreated)
+}
+
+// @Summary Pegar informações da empresa
+// @Description Pegar informações da empresa baseado no ID da empresa presente no token
+// @Tags User
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.Company "Company information"
+// @Failure 400 {string} string "Bad Request"
+// @Failure 500 {string} string "Internal Server Error"
+// @Router /company/info [get]
+func (ch *CompanyHandler) GetCompanyInfos(w http.ResponseWriter, r *http.Request) {
+	c, err := r.Cookie("token")
+	if err != nil {
+		utils.WriteResponse("Error getting token", w, http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+
+	if c == nil {
+		utils.WriteResponse("No token found", w, http.StatusBadRequest)
+		fmt.Println(err.Error())
+		return
+	}
+
+	companyId, err := token.ParseToken(c.Value)
+	if err != nil {
+		utils.WriteResponse("Error parsing token", w, http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+
+	company, err := ch.service.GetCompanyInfos(companyId)
+	if err != nil {
+		utils.WriteResponse("Error getting company information", w, http.StatusBadRequest)
+		fmt.Println(err.Error())
+		return
+	}
+
+	reponseJson, err := json.Marshal(company)
+	if err != nil {
+		utils.WriteResponse("Error parsing company information", w, http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(reponseJson)
 }

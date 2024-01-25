@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	_ "github.com/GbSouza15/sistemaEstoque/cmd/docs"
+	_ "github.com/GbSouza15/sistemaEstoque/docs"
 	router "github.com/GbSouza15/sistemaEstoque/internal/app/routers"
 	"github.com/GbSouza15/sistemaEstoque/internal/database"
-	"github.com/GbSouza15/sistemaEstoque/internal/database/schema"
 )
 
 // @title Sistema de Estoque API
@@ -22,8 +21,7 @@ import (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host localhost:8080
-// @BasePath /api/v1
+// @host sistemaestoques.fly.dev
 func main() {
 
 	db, err := database.InitDb()
@@ -32,10 +30,10 @@ func main() {
 		os.Exit(1)
 	}
 
-	err = schema.CreateSchema(db)
-	if err != nil {
-		fmt.Printf("Error in created schema %v ", err.Error())
-	}
+	// err = schema.CreateSchema(db)
+	// if err != nil {
+	// 	fmt.Printf("Error in created schema %v ", err.Error())
+	// }
 
 	err = router.RoutesApi(db)
 	if err != nil {

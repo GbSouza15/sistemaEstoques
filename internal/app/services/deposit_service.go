@@ -34,3 +34,34 @@ func (ds *DepositService) CreateDeposit(body []byte) error {
 
 	return nil
 }
+
+func (ds *DepositService) ListDeposits(companyId uuid.UUID) ([]models.Deposit, error) {
+	deposits, err := ds.repo.ListDeposits(companyId)
+	if err != nil {
+		return nil, err
+	}
+
+	return deposits, nil
+}
+
+func (ds *DepositService) DeleteDeposit(id string) error {
+	if err := ds.repo.DeleteDeposit(id); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (ds *DepositService) UpdateDeposit(body []byte) error {
+	var depositUpdate models.DepositUpdate
+
+	if err := json.Unmarshal(body, &depositUpdate); err != nil {
+		return err
+	}
+
+	if err := ds.repo.UpdateDeposit(depositUpdate.Id, depositUpdate.Name, depositUpdate.Address); err != nil {
+		return err
+	}
+
+	return nil
+}

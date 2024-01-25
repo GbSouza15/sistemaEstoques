@@ -64,24 +64,6 @@ func (us *UserService) LoginUser(body []byte) (string, error) {
 	return tokenString, nil
 }
 
-func (us *UserService) GetCompanyInfos(companyId uuid.UUID) (models.CompanyInfos, error) {
-
-	companyName, companyEmail, companyAddress, companyPhone, companyCnpj, err := us.repo.GetCompanyInfos(companyId)
-	if err != nil {
-		return models.CompanyInfos{}, err
-	}
-
-	company := models.CompanyInfos{
-		Name:    companyName,
-		Email:   companyEmail,
-		Address: companyAddress,
-		Phone:   companyPhone,
-		CNPJ:    companyCnpj,
-	}
-
-	return company, nil
-}
-
 func (us *UserService) DeleteUser(userId string) error {
 
 	if err := us.repo.DeleteUser(userId); err != nil {

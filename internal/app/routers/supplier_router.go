@@ -17,6 +17,9 @@ func SupplierRoutes(db *sql.DB, r *mux.Router) error {
 	supplierHandler := handler.NewSupplierHandler(supplierService)
 
 	r.HandleFunc("/company/register/supplier", middleware.Middleware(supplierHandler.CreateSupplier)).Methods(http.MethodPost)
+	r.HandleFunc("/company/update/supplier", middleware.Middleware(supplierHandler.UpdateSupplier)).Methods(http.MethodPut)
+	r.HandleFunc("/company/delete/supplier/{id}", middleware.Middleware(supplierHandler.DeleteSupplier)).Methods(http.MethodDelete)
+	r.HandleFunc("/company/suppliers", middleware.Middleware(supplierHandler.GetSuppliers)).Methods(http.MethodGet)
 
 	return nil
 }

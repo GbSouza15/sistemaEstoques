@@ -17,6 +17,9 @@ func DepositRoutes(db *sql.DB, r *mux.Router) error {
 	depositHandler := handler.NewDepositHandler(depositService)
 
 	r.HandleFunc("/company/register/deposit", middleware.Middleware(depositHandler.CreateDeposit)).Methods(http.MethodPost)
+	r.HandleFunc("/company/list/deposit", middleware.Middleware(depositHandler.ListDeposits)).Methods(http.MethodGet)
+	r.HandleFunc("/company/delete/deposit/{depositId}", middleware.Middleware(depositHandler.DeleteDeposit)).Methods(http.MethodDelete)
+	r.HandleFunc("/company/update/deposit", middleware.Middleware(depositHandler.UpdateDeposit)).Methods(http.MethodPut)
 
 	return nil
 }

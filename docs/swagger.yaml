@@ -1,4 +1,3 @@
-basePath: /api/v1
 definitions:
   models.Company:
     properties:
@@ -22,6 +21,15 @@ definitions:
       address:
         type: string
       company_id:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  models.DepositUpdate:
+    properties:
+      address:
         type: string
       id:
         type: string
@@ -85,6 +93,17 @@ definitions:
       phone:
         type: string
     type: object
+  models.SupplierUpdate:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+    type: object
   models.User:
     properties:
       admin:
@@ -111,7 +130,7 @@ definitions:
       password:
         type: string
     type: object
-host: localhost:8080
+host: sistemaestoques.fly.dev
 info:
   contact:
     email: support@swagger.io
@@ -125,25 +144,71 @@ info:
   title: Sistema de Estoque API
   version: "1.0"
 paths:
-  /company/login/user:
-    post:
-      consumes:
-      - application/json
-      description: Login do usuário no sistema
+  /company/delete/deposit/{depositId}:
+    delete:
+      description: Deleta um depósito do sistema
       parameters:
-      - description: User login details
-        in: body
-        name: requestBody
+      - description: ID do depósito
+        in: query
+        name: depositId
         required: true
-        schema:
-          $ref: '#/definitions/models.UserLogin'
+        type: string
       produces:
       - application/json
       responses:
         "200":
-          description: User logged in successfully
+          description: Deposit removed successfully
           schema:
             type: string
+        "500":
+          description: Error to remove deposit
+          schema:
+            type: string
+      summary: Deletar um depósito
+      tags:
+      - Depósito
+  /company/delete/supplier/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deleta um fornecedor no sistema
+      parameters:
+      - description: ID do fornecedor
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Fornecedor deletado com sucesso
+          schema:
+            type: string
+        "400":
+          description: Requisição Inválida
+          schema:
+            type: string
+        "500":
+          description: Erro Interno do Servidor
+          schema:
+            type: string
+      summary: Deletar um fornecedor
+      tags:
+      - Fornecedor
+  /company/info:
+    get:
+      consumes:
+      - application/json
+      description: Pegar informações da empresa baseado no ID da empresa presente
+        no token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Company information
+          schema:
+            $ref: '#/definitions/models.Company'
         "400":
           description: Bad Request
           schema:
@@ -152,9 +217,38 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: Login do usuário
+      summary: Pegar informações da empresa
       tags:
       - User
+  /company/list/deposit:
+    get:
+      description: Lista todos os depósitos cadastrados no sistema
+      parameters:
+      - description: ID da empresa
+        in: query
+        name: companyId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lista de depósitos
+          schema:
+            items:
+              $ref: '#/definitions/models.Deposit'
+            type: array
+        "400":
+          description: Invalid request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Listar depósitos
+      tags:
+      - Depósito
   /company/register:
     post:
       consumes:
@@ -417,6 +511,67 @@ paths:
       summary: Pesquisar produtos
       tags:
       - Produto
+  /company/suppliers:
+    get:
+      consumes:
+      - application/json
+      description: Lista todos os fornecedores de uma empresa
+      parameters:
+      - description: ID da empresa
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lista de fornecedores
+          schema:
+            items:
+              $ref: '#/definitions/models.Supplier'
+            type: array
+        "400":
+          description: Requisição Inválida
+          schema:
+            type: string
+        "500":
+          description: Erro Interno do Servidor
+          schema:
+            type: string
+      summary: Listar fornecedores
+      tags:
+      - Fornecedor
+  /company/update/deposit:
+    put:
+      consumes:
+      - application/json
+      description: Atualiza um depósito no sistema
+      parameters:
+      - description: Detalhes do cadastro do depósito
+        in: body
+        name: requestBody
+        required: true
+        schema:
+          $ref: '#/definitions/models.DepositUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Deposit updated successfully
+          schema:
+            type: string
+        "400":
+          description: Error reading body
+          schema:
+            type: string
+        "500":
+          description: Error updating deposit
+          schema:
+            type: string
+      summary: Atualizar um depósito
+      tags:
+      - Depósito
   /company/update/product:
     put:
       consumes:
@@ -447,19 +602,55 @@ paths:
       summary: Atualizar um produto
       tags:
       - Produto
-  /company/user:
-    get:
+  /company/update/supplier:
+    put:
       consumes:
       - application/json
-      description: Pegar informações da empresa baseado no ID da empresa presente
-        no token
+      description: Atualiza um fornecedor no sistema
+      parameters:
+      - description: Detalhes da atualização do fornecedor
+        in: body
+        name: requestBody
+        required: true
+        schema:
+          $ref: '#/definitions/models.SupplierUpdate'
       produces:
       - application/json
       responses:
         "200":
-          description: Company information
+          description: Fornecedor atualizado com sucesso
           schema:
-            $ref: '#/definitions/models.Company'
+            type: string
+        "400":
+          description: Requisição Inválida
+          schema:
+            type: string
+        "500":
+          description: Erro Interno do Servidor
+          schema:
+            type: string
+      summary: Atualizar um fornecedor
+      tags:
+      - Fornecedor
+  /company/user/login:
+    post:
+      consumes:
+      - application/json
+      description: Login do usuário no sistema
+      parameters:
+      - description: User login details
+        in: body
+        name: requestBody
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User logged in successfully
+          schema:
+            type: string
         "400":
           description: Bad Request
           schema:
@@ -468,7 +659,7 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: Pegar informações da empresa
+      summary: Login do usuário
       tags:
       - User
 swagger: "2.0"

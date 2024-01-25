@@ -18,7 +18,6 @@ func UserRoutes(db *sql.DB, r *mux.Router) error {
 
 	r.HandleFunc("/company/register/user", userHandler.RegisterUser).Methods(http.MethodPost)
 	r.HandleFunc("/company/remove/user/{userId}", middleware.Middleware(userHandler.DeleteUser)).Methods(http.MethodDelete)
-	r.HandleFunc("/company/user", middleware.Middleware(userHandler.GetCompanyInfos)).Methods(http.MethodGet)
 	r.HandleFunc("/company/user/login", userHandler.LoginUser).Methods(http.MethodPost)
 
 	return nil
