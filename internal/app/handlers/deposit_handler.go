@@ -52,6 +52,8 @@ func (dh *DepositHandler) CreateDeposit(w http.ResponseWriter, r *http.Request) 
 	utils.WriteResponse("Deposit created successfully", w, http.StatusCreated)
 }
 
+//teste
+
 // @Summary Listar depósitos
 // @Description Lista todos os depósitos cadastrados no sistema
 // @Tags Depósito
