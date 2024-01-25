@@ -50,7 +50,7 @@ func (ch *CompanyHandler) RegisterCompany(w http.ResponseWriter, r *http.Request
 
 // @Summary Pegar informações da empresa
 // @Description Pegar informações da empresa baseado no ID da empresa presente no token
-// @Tags User
+// @Tags Empresa
 // @Accept json
 // @Produce json
 // @Success 200 {object} models.Company "Company information"

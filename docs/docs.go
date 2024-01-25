@@ -113,7 +113,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Empresa"
                 ],
                 "summary": "Pegar informações da empresa",
                 "responses": {

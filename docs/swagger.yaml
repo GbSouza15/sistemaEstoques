@@ -219,7 +219,7 @@ paths:
             type: string
       summary: Pegar informações da empresa
       tags:
-      - User
+      - Empresa
   /company/list/deposit:
     get:
       description: Lista todos os depósitos cadastrados no sistema
