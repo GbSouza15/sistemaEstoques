@@ -40,9 +40,8 @@ func HandleWebhook(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	endpointSecret := "whsec_..."
-	signatureHeader := req.Header.Get("Stripe-Signature")
-	event, err = webhook.ConstructEvent(payload, signatureHeader, endpointSecret)
+	endpointSecret := os.Getenv("END_POINT_SECRET")
+	event, err = webhook.ConstructEvent(payload, req.Header.Get("Stripe-Signature"), endpointSecret)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "⚠️  Webhook signature verification failed. %v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
