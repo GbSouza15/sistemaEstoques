@@ -12,7 +12,7 @@ import (
 func RoutesApi(db *sql.DB) error {
 	r := mux.NewRouter()
 
-	if err := WebhooksRoutes(r); err != nil {
+	if err := WebhooksRoutes(db, r); err != nil {
 		return err
 	}
 

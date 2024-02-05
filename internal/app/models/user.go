@@ -14,6 +14,7 @@ type User struct {
 	CPF       string    `json:"cpf"`
 	CompanyId string    `json:"company_id"`
 	Admin     bool      `json:"admin"`
+	PaymentId string    `json:"payment_id"`
 }
 
 type UserLogin struct {
